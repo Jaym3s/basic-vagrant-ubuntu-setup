@@ -1,6 +1,29 @@
 # development.pp
 stage { 'req-install': before => Stage['rvm-install'] }
 
+class dev_environment {
+  exec { "create_user_bin":
+        command     => "/bin/mkdir -p ~/bin",
+            creates => "~/bin"
+  }
+
+  exec { "clone_dotfiles_to_bin":
+        command => "git clone https://github.com/Jaym3s/dotfiles.git ~/bin/dotfiles",
+        creates  => "~/bin/dotfiles"
+  }
+
+  exec { "symlink_dotfiles":
+        path    => "~/bin/dotfiles",
+        command => "./setuplinks"
+  }
+
+  exec { "vimbundle":
+        path    => "~/bin/dotfiles",
+        command => "./setuplinks"
+  }
+
+}
+
 class requirements {
   group { "puppet": ensure => "present", }
   exec { "apt-update":
